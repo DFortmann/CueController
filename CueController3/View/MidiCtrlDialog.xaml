@@ -1,0 +1,16 @@
+﻿<Controls:MetroWindow x:Name="midiCtrlDialog" x:Class="CueController3.View.MidiCtrlDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CueController3.View"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="nanoKONTROL2" Height="386.4" Width="900"  WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White">
+    <Grid Margin="10,0,3.6,0.4">
+        <ComboBox x:Name="ctrlChoice" Margin="0,10,0,320.4" Height="25" HorizontalAlignment="Left" Width="150" />
+        <Button x:Name="setButton" Content="Update" Margin="0,10,6,321.4" HorizontalAlignment="Right" Width="70"/>
+        <TextBox x:Name="cmdBox" Margin="0,41,6,9.4" TextWrapping="Wrap" AcceptsReturn="True"/>
+        <ComboBox x:Name="addCmd" Margin="155,10,81,320.4" Height="25" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+    </Grid>
+</Controls:MetroWindow>
