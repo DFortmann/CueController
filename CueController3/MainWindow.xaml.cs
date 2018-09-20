@@ -121,7 +121,7 @@ namespace CueController3
             FollowCtrl.Init();
             GoCtrl.Init();
             LogCtrl.Init();
-            LogCtrl.Status("CueController 3.41b");
+            LogCtrl.Status("CueController 3.43b");
             MidiController.Init();
             MidiInputCtrl.Init();
             MidiOutputCtrl.Init();

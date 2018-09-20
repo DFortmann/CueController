@@ -4,7 +4,7 @@ using System.Windows.Markup;
 
 namespace CueController3.Model
 {
-    public enum TriggerType {FOLLOW, MSC, NOTE }
+    public enum TriggerType {FOLLOW, MSC, NOTE, OSC }
 
     class Trigger
     {
@@ -12,6 +12,7 @@ namespace CueController3.Model
         public TriggerType type;
         public MscCommand  mscCmd;
         public MidiNote note;
+        public OscCmd oscCmd;
         public string name;
         public Canvas icon;
 
@@ -37,6 +38,14 @@ namespace CueController3.Model
             this.note = note;
             this.name = name; 
             icon = XamlReader.Parse(Properties.Resources.note) as Canvas;
+        }
+
+        private Trigger(OscCmd oscCmd, string name)
+        {
+            type = TriggerType.OSC;
+            this.oscCmd = oscCmd;
+            this.name = name;
+            icon = XamlReader.Parse(Properties.Resources.osc) as Canvas;
         }
 
         public static Trigger GetTrigger(string value) {
@@ -94,6 +103,11 @@ namespace CueController3.Model
                     case "NOTE":
                         MidiNote note = MidiNote.getMidiNote(array[1]);
                         if (note != null && note.pitch < 108) return new Trigger(note, "Note " + array[1]);
+                        break;
+
+                    case "OSC":
+                        OscCmd oscCmd = OscCmd.GetOscCmd("/Cue " + array[1]);
+                        if (oscCmd != null) return new Trigger(oscCmd, "OSC " + array[1]);
                         break;
                 }
             }

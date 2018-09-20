@@ -11,52 +11,58 @@ namespace CueController3.Model
         public string oscAddress, stringVal;
         public float floatVal;
         public int intVal;
-        public int id;
+        public string keyword;
         public DataType type;
 
-        public OscCmd(int id, string oscAddress, string value)
+        public OscCmd(string keyword, string oscAddress, string value)
         {
-            this.id = id;
+            this.keyword = keyword;
             this.oscAddress = oscAddress;
             type = DataType.STRING;
             stringVal = value;
         }
 
-        public OscCmd(int id, string oscAddress, int value)
+        public OscCmd(string keyword, string oscAddress, int value)
         {
-            this.id = id;
+            this.keyword = keyword;
             this.oscAddress = oscAddress;
             type = DataType.INT;
             intVal = value;
         }
 
-        public OscCmd(int id, string oscAddress, float value)
+        public OscCmd(string keyword, string oscAddress, float value)
         {
-            this.id = id;
+            this.keyword = keyword;
             this.oscAddress = oscAddress;
             type = DataType.FLOAT;
             floatVal = value;
         }
 
-        static public OscCmd GetOscCmd(int id, string cmd)
+        public static OscCmd GetOscCmd(string cmd)
         {
             string[] array = cmd.Trim().Split(' ');
-            if (array.Length > 1 && array[0].StartsWith("/"))
-            {
-                int intVal;
-                Match match = Regex.Match(array[1], @"^\d+(\.\d?)+$");
-                if (match.Success)
-                {
-                    float floatVal;
-                    if (float.TryParse(array[1], NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out floatVal))
-                        return new OscCmd(id, array[0], floatVal);
-                }
-                else if (int.TryParse(array[1], out intVal))
-                    return new OscCmd(id, array[0], intVal);
+            if (array.Length < 2) return null;
 
-                else return new OscCmd(id, array[0], array[1]);
+            string address = "";
+            string value = array[array.Length - 1];
+
+            if (array.Length > 2)
+            {
+                if (!array[1].StartsWith("/")) return null;
+                address = array[1];
             }
-            return null;
+
+            Match match = Regex.Match(value, @"^\d+(\.\d?)+$");
+            if (match.Success)
+            {
+                if (float.TryParse(value, NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out float floatVal))
+                    return new OscCmd(array[0], address, floatVal);
+            }
+
+            if (int.TryParse(value, out int intVal))
+                return new OscCmd(array[0], address, intVal);
+
+            return new OscCmd(array[0], address, value);
         }
     }
 }

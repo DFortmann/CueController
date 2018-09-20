@@ -43,7 +43,7 @@ namespace CueController3.Controller.Beamer
 
         private static void AddBeamerButton_Click(object sender, RoutedEventArgs e)
         {
-            string s = InputDialogCtrl.Show("Enter Beamer ID + IP");
+            string s = InputDialogCtrl.Show("Enter: ID IP");
 
             if (s != null)
             {

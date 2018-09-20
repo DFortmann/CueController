@@ -30,7 +30,7 @@ namespace CueController3.Model
                 if (send != null && send.type == SendType.PB)
                     send = Send.GetSend("PB", description);
                 else if (send != null && send.type == SendType.OSC)
-                    send = Send.GetSend("OSC " + send.oscCmd.id, description);
+                    send = Send.GetSend("OSC " + send.oscCmd.keyword, description);
             }
         }
 

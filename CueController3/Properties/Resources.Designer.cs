@@ -19,7 +19,7 @@ namespace CueController3.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -118,7 +118,7 @@ namespace CueController3.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;Canvas xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot; xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; x:Name=&quot;appbar_link&quot; Width=&quot;76&quot; Height=&quot;76&quot; Clip=&quot;F1 M 0,0L 76,0L 76,76L 0,76L 0,0&quot;&gt;
-        ///	&lt;Path Width=&quot;38.818&quot; Height=&quot;30.7044&quot; Canvas.Left=&quot;18.591&quot; Canvas.Top=&quot;24.2311&quot; Stretch=&quot;Fill&quot; Fill=&quot;#FF000000&quot; Data=&quot;F1 M 23.4963,46.1288L 25.0796,48.8712L 29.4053,50.0303L 33.519,47.6553L 34.8902,46.8636L 37.6326,45.2803L 38.4242,46.6515L 37.2652,50.9772 [rest of string was truncated]&quot;;.
+        ///	&lt;Path Width=&quot;38.818&quot; Height=&quot;30.7044&quot; Canvas.Left=&quot;18.591&quot; Canvas.Top=&quot;24.2311&quot; Stretch=&quot;Fill&quot; Fill=&quot;#FFFFFF&quot; Data=&quot;F1 M 23.4963,46.1288L 25.0796,48.8712L 29.4053,50.0303L 33.519,47.6553L 34.8902,46.8636L 37.6326,45.2803L 38.4242,46.6515L 37.2652,50.9772L  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string osc {
             get {

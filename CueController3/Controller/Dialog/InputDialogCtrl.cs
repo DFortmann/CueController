@@ -8,7 +8,12 @@ namespace CueController3.Controller.Dialog
 
         public static string Show(string header)
         {
-            dialog = new InputDialog();
+            return Show(header, 0);
+        }
+
+        public static string Show(string header, int width)
+        {
+            dialog = new InputDialog(width);
             dialog.Owner = Core.win.mainWindow;
             dialog.inputDialog.Title = header;
             dialog.textBox.Focus();

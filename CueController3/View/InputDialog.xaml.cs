@@ -4,9 +4,10 @@ namespace CueController3.View
 {
     public partial class InputDialog : MetroWindow
     {
-        public InputDialog()
+        public InputDialog(int width)
         {
             InitializeComponent();
+            if(width > 0) inputDialog.Width = width;
             okButton.Click += OkButton_Click;
         }
 

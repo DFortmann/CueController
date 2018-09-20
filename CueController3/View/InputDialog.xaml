@@ -9,7 +9,7 @@
         Height="115.333" Width="247.667" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" FontSize="32" BorderBrush="Gray">
     <Grid Margin="0,0,0.333,81.333">
         <TextBox x:Name="textBox" Height="0" Margin="10,0,10.334,-29" TextWrapping="Wrap" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" FontSize="16"/>
-        <Button x:Name="okButton" Content="ok" Margin="70,0,101.334,-74" IsDefault="True" FontSize="16" Height="33" VerticalAlignment="Bottom"/>
-        <Button x:Name="cancelButton" Content="Cancel" Margin="161,0,10.334,-74" IsCancel="True" FontSize="16" Height="33" VerticalAlignment="Bottom"/>
+        <Button x:Name="okButton" Content="ok" Margin="0,0,100.667,-74.333" IsDefault="True" FontSize="16" Height="33" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="71"/>
+        <Button x:Name="cancelButton" Content="Cancel" Margin="0,0,9.667,-74.333" IsCancel="True" FontSize="16" Height="33" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="71"/>
     </Grid>
 </Controls:MetroWindow>

@@ -1,8 +1,10 @@
-﻿using CueController3.Model;
+﻿using CueController3.Controller.Cues;
+using CueController3.Model;
 using Rug.Osc;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using static CueController3.Controller.Network.OscListCtrl;
@@ -44,23 +46,23 @@ namespace CueController3.Controller.Network
                 return;
             }
 
-            foreach(OscTarget target in oscTargets)
+            foreach (OscTarget target in oscTargets)
             {
-                if(target.id == oscCmd.id)
+                if (target.keyword == oscCmd.keyword)
                 {
                     using (OscSender sender = new OscSender(target.ip, target.port))
                     {
                         sender.Connect();
 
                         if (oscCmd.type == DataType.INT)
-                            sender.Send(new OscMessage(oscCmd.oscAddress, oscCmd.intVal));
+                            sender.Send(new OscMessage(target.prefix + oscCmd.oscAddress, oscCmd.intVal));
 
                         else if (oscCmd.type == DataType.FLOAT)
-                            sender.Send(new OscMessage(oscCmd.oscAddress, oscCmd.floatVal));
+                            sender.Send(new OscMessage(target.prefix + oscCmd.oscAddress, oscCmd.floatVal));
 
-                        else sender.Send(new OscMessage(oscCmd.oscAddress, oscCmd.stringVal));
+                        else sender.Send(new OscMessage(target.prefix + oscCmd.oscAddress, oscCmd.stringVal));
                     }
-                    switch(oscCmd.type)
+                    switch (oscCmd.type)
                     {
                         case DataType.FLOAT:
                             LogCtrl.Status("Send OSC: " + oscCmd.oscAddress + " " + oscCmd.floatVal);
@@ -75,7 +77,7 @@ namespace CueController3.Controller.Network
                     return;
                 }
             }
-            LogCtrl.Error("Couldn't find OSC target " + oscCmd.id + ".");
+            LogCtrl.Error("Couldn't find OSC target " + oscCmd.keyword + ".");
         }
 
         public static void OscMute(bool b)
@@ -109,10 +111,43 @@ namespace CueController3.Controller.Network
 
                     if (receiver.State == OscSocketState.Connected)
                     {
-                        OscPacket packet = receiver.Receive();
+                        string command = receiver.Receive().ToString();
+
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            LogCtrl.Success(packet.ToString());
+                            if (!oscMute)
+                            {
+                                if ((command.StartsWith("/video") || command.StartsWith("/eos/out")))
+                                {
+                                    Match match = Regex.Match(command, @".*/(\d+)/fire.*$");
+                                    if (match.Success)
+                                    {
+                                        Debug.WriteLine(match.Groups[1].Value);
+                                        if (int.TryParse(match.Groups[1].Value, out int cueNr))
+                                        {
+                                            for (int i = 0; i < CuelistCtrl.cues.Count; ++i)
+                                            {
+                                                Cue cue = CuelistCtrl.cues[i];
+                                                if (cue.trigger != null && cue.trigger.type == TriggerType.OSC && cue.trigger.oscCmd.intVal == cueNr)
+                                                {
+                                                    if (Core.win.saveTriggerCheckbox.IsChecked && Core.win.cueTable.SelectedIndex != i)
+                                                        LogCtrl.Error("In: " + command);
+                                                    else
+                                                    {
+                                                        LogCtrl.Success("In: " + command);
+                                                        GoCtrl.Go(i);
+                                                    }
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    LogCtrl.Status("In: " + command);
+                                }
+                                else LogCtrl.Status("In: " + command);
+                            }
+                            else LogCtrl.Warning("In: " + command);
+                        
                         }));
                     }
                 }

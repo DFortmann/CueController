@@ -126,9 +126,6 @@ namespace CueController3.Controller.Files
                         case "MidiMap":
                             MidiController.LoadMidiMap(table);
                             break;
-                        case "OscTargets":
-                            OscListCtrl.LoadOscTargets(table);
-                            break;
                         default:
                             CuelistCtrl.SetCuesFromTable(table);
                             break;
@@ -165,7 +162,6 @@ namespace CueController3.Controller.Files
                 dataSet.Tables.Add(CuelistCtrl.GetCueTable());
                 dataSet.Tables.Add(ScriptlistCtrl.GetScriptTable());
                 dataSet.Tables.Add(BeamerlistCtrl.GetBeamerTable());
-                dataSet.Tables.Add(OscListCtrl.GetOscTargetTable());
                 dataSet.Tables.Add(MidiController.GetMidiMapTable());
 
                 try { dataSet.WriteXml(p); }

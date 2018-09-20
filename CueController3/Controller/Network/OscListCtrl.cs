@@ -17,85 +17,59 @@ namespace CueController3.Controller.Network
         public static void Init()
         {
             Core.win.addOscButton.Click += AddOscButton_Click;
-        }
 
-        public static void LoadOscTargets(DataTable table)
-        {
-            try
+            if (Properties.Settings.Default.oscTargets == null)
+                Properties.Settings.Default.oscTargets = new System.Collections.Specialized.StringCollection();
+
+            foreach (string oscTarget in Properties.Settings.Default.oscTargets)
             {
-                oscTargets.Clear();
-
-                foreach(DataRow row in table.Rows)
-                {
-                    int id = int.Parse(row[0].ToString());
-                    IPAddress ip = IPAddress.Parse(row[1].ToString());
-                    int port = int.Parse(row[2].ToString());
-                    oscTargets.Add(new OscTarget(id, ip, port));
-                }
-                oscTargets.Sort((x, y) => x.id.CompareTo(y.id));
-                RefreshOscMenu();
-            }catch(Exception e)
-            {
-                LogCtrl.Error("Couldn't load OSC targets.");
-                LogCtrl.Error(e.ToString());
-
+                string[] target = oscTarget.Split(' ');
+                oscTargets.Add(new OscTarget(target[0], target[1], IPAddress.Parse(target[2]), int.Parse(target[3]), oscTarget));
             }
-        }
 
-        public static DataTable GetOscTargetTable()
-        {
-            using (DataTable oscTargetTable = new DataTable("OscTargets"))
-            {
-                oscTargetTable.Columns.Add("ID");
-                oscTargetTable.Columns.Add("IP");
-                oscTargetTable.Columns.Add("Port");
-
-                foreach (OscTarget oscTarget in oscTargets)
-                    oscTargetTable.Rows.Add(oscTarget.id, oscTarget.ip, oscTarget.port);
-
-                return oscTargetTable;
-            }
         }
 
         private static void AddOscButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            string s = InputDialogCtrl.Show("Enter ID + IP + Port");
+            string s = InputDialogCtrl.Show("Enter: Keyword Prefix IP Port", 300);
 
             if (s != null)
             {
                 string[] buff = s.Split(' ');
-                if (buff.Length >= 3)
+                if (buff.Length >= 4)
                 {
-                    int id;
-                    if (!int.TryParse(buff[0], out id)) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "Invalid ID.");
+                    if (!buff[1].StartsWith("/")) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Wrong prefix format.", "OSC addresses have to start with /");
+                    else if (buff[1].EndsWith("/")) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Wrong prefix format.", "Prefix cannot end with /");
                     else
                     {
-                        Match match = Regex.Match(buff[1], @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+                        Match match = Regex.Match(buff[2], @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
                         if (!match.Success) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "Invalid IP.");
                         else
                         {
-                            IPAddress ip = IPAddress.Parse(buff[1]);
-                            int port;
-                            if (!int.TryParse(buff[2], out port)) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "Invalid Port.");
-                            else AddOscTarget(id, ip, port);
+                            if (!int.TryParse(buff[3], out int port)) DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "Invalid Port.");
+                            else AddOscTarget(buff[0], buff[1], IPAddress.Parse(buff[2]), port, s);
                         }
-                        CuelistCtrl.saved = false;
                     }
                 }
                 else DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Wrong Format!", "Enter ID (chosen by you), IP and Port.");
             }
         }
 
-        private static void AddOscTarget(int id, IPAddress ip, int port)
+        private static void AddOscTarget(string keyword, string prefix, IPAddress ip, int port, string wholeString)
         {
             foreach (OscTarget oscTarget in oscTargets)
-                if (oscTarget.id == id)
+                if (oscTarget.keyword == keyword)
                 {
-                    DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "ID alread exists.");
+                    DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't add OSC target!", "Keyword was already assigned.");
                     return;
                 }
-            oscTargets.Add(new OscTarget(id, ip, port));
-            oscTargets.Sort((x, y) => x.id.CompareTo(y.id));
+
+            oscTargets.Add(new OscTarget(keyword, prefix, ip, port, wholeString));
+
+            Properties.Settings.Default.oscTargets.Add(wholeString);
+            Properties.Settings.Default.Save();
+
+            oscTargets.Sort((x, y) => x.keyword.CompareTo(y.keyword));
             RefreshOscMenu();
 
             LogCtrl.Status("Added OSC Target.");
@@ -108,7 +82,7 @@ namespace CueController3.Controller.Network
             foreach (OscTarget target in oscTargets)
             {
                 MenuItem mi = new MenuItem();
-                mi.Header = target.id + " " + target.ip + ":" + target.port;
+                mi.Header = target.keyword + " " + target.prefix + " " + target.ip + ":" + target.port;
                 mi.Click += RemoveOscTarget_Click;
                 Core.win.removeOscMenu.Items.Add(mi);
             }
@@ -117,37 +91,36 @@ namespace CueController3.Controller.Network
         private static void RemoveOscTarget_Click(object sender, RoutedEventArgs e)
         {
             MenuItem sendItem = sender as MenuItem;
-            int id;
-
-            if (int.TryParse(sendItem.Header.ToString().Split(' ')[0], out id))
+            string keyword = sendItem.Header.ToString().Split(' ')[0];
+            foreach (OscTarget target in oscTargets)
             {
-                foreach (OscTarget target in oscTargets)
+                if (target.keyword == keyword)
                 {
-                    if (target.id == id)
-                    {
-
-                        oscTargets.Remove(target);
-                        Core.win.removeOscMenu.Items.Remove(sendItem);
-                        break;
-                    }
+                    oscTargets.Remove(target);
+                    Properties.Settings.Default.oscTargets.Remove(target.wholeString);
+                    Properties.Settings.Default.Save();
+                    Core.win.removeOscMenu.Items.Remove(sendItem);
+                    break;
                 }
-                CuelistCtrl.saved = false;
-                LogCtrl.Status("Removed OSC Target.");
             }
+
+            LogCtrl.Status("Removed OSC Target.");
         }
+    }
 
-       public class OscTarget
+    public class OscTarget
+    {
+        public string keyword, prefix, wholeString;
+        public IPAddress ip;
+        public int port;
+
+        public OscTarget(string keyword, string prefix, IPAddress ip, int port, string wholeString)
         {
-            public int id, port;
-            public IPAddress ip;
-
-            public OscTarget(int id, IPAddress ip, int port)
-            {
-                this.id = id;
-                this.ip = ip;
-
-                this.port = port;
-            }
+            this.keyword = keyword;
+            this.prefix = prefix;
+            this.ip = ip;
+            this.port = port;
+            this.wholeString = wholeString;
         }
     }
 }

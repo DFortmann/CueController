@@ -14,32 +14,39 @@ namespace CueController3.Controller.Network
         {
             Core.win.masterIpButton.Click += MasterIpButton_Click;
 
-            if (Properties.Settings.Default.masterIp.Length > 0)
-                Connect(Properties.Settings.Default.masterIp);
+            if (Properties.Settings.Default.masterIp.Length > 0 )
+                Connect(Properties.Settings.Default.masterIp, Properties.Settings.Default.domain);
         }
 
         private static void MasterIpButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            string ip = InputDialogCtrl.Show("Enter PB IP");
+            string ip = InputDialogCtrl.Show("Enter PB IP and Domain");
 
             if (ip != null)
             {
-                Match match = Regex.Match(ip, @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
-                if (match.Success)
+                string[] a = ip.Split(' ');
+                if (a.Length >= 2)
                 {
-                    Connect(ip);
-                    MidiController.Connect(ip);
+                    Match match = Regex.Match(a[0], @"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+
+                    if (match.Success && int.TryParse(a[1], out int domain))
+                    {
+                        Connect(a[0], domain);
+                        MidiController.Connect(ip);
+                    }
+                    else DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't connect to PB!", "You entered an invalid IP or domain.");
                 }
-                else DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't connect to PB!", "You entered an invalid IP address.");
+                else DialogCtrl.Show(DialogType.ERROR, OptionType.OKCANCEL, "Can't connect to PB!", "You entered an invalid IP or domain.");
             }
         }
 
-        public static void Connect(string ip)
+        public static void Connect(string ip, int domain)
         {
             Auto.UnInitialize();
-            Auto.InitializeTCP(ip, 0, true);
-            LogCtrl.Status("Connecting to PB: " + ip);
+            Auto.InitializeTCP(ip, domain, true);
+            LogCtrl.Status("Connecting to PB: " + ip + " (Domain " + domain + ")");
             Properties.Settings.Default.masterIp = ip;
+            Properties.Settings.Default.domain = domain;
             Properties.Settings.Default.Save();
         }
 

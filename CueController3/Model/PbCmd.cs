@@ -107,7 +107,7 @@ namespace CueController3.Model
                 }
                 return null;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

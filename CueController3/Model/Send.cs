@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace CueController3.Model
 {
     public enum SendType { SC, SCRIPT, SHUTTER, MATRIX, MSC, MUTE, NOTE, PB, OSC }
-    public enum MuteType { ALL, NOTE, MSC , OSC}
+    public enum MuteType { ALL, NOTE, MSC, OSC }
 
     class Send
     {
@@ -80,7 +80,7 @@ namespace CueController3.Model
         {
             type = SendType.OSC;
             this.oscCmd = oscCmd;
-            name = "OSC " + oscCmd.id; 
+            name = "OSC";
         }
 
         public static Send GetSend(string value, string pbScript)
@@ -163,22 +163,22 @@ namespace CueController3.Model
                             if (int.TryParse(array[1], out scriptNr) && scriptNr > 0 && scriptNr < 11)
                                 return new Send(scriptNr, "Script " + array[1]);
                             break;
-
-                        case "OSC":
-                            int id;
-                            if(int.TryParse(array[1], out id) && pbScript != null)
-                            {
-                                OscCmd oscCmd = OscCmd.GetOscCmd(id, pbScript);
-                                if (oscCmd != null) return new Send(oscCmd);
-                            }
-                            break;  
                     }
                 }
             }
-            else if (array.Length == 1 && array[0].ToUpper() == "PB" && pbScript != null)
+            else if (array.Length == 1)
             {
-                PbCmd pbCmd = PbCmd.GetPbCmd(pbScript);
-                if (pbCmd != null) return new Send(pbCmd);
+                if (array[0].ToUpper() == "PB" && pbScript != null)
+                {
+                    PbCmd pbCmd = PbCmd.GetPbCmd(pbScript);
+                    if (pbCmd != null) return new Send(pbCmd);
+                }
+
+                else if (array[0].ToUpper() == "OSC" && pbScript != null)
+                {
+                    OscCmd oscCmd = OscCmd.GetOscCmd(pbScript);
+                    if (oscCmd != null) return new Send(oscCmd);
+                }
             }
             return null;
         }
