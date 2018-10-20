@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Net;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using static CueController3.Controller.Network.OscCtrl;
 
@@ -42,6 +40,7 @@ namespace CueController3.Model
         {
             string[] array = cmd.Trim().Split(' ');
             if (array.Length < 2) return null;
+            if (array.Length == 2 && array[1].StartsWith("/")) return null;
 
             string address = "";
             string value = array[array.Length - 1];

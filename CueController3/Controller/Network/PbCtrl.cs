@@ -2,6 +2,8 @@
 using CueController3.Controller.MyMidi;
 using CueController3.Model;
 using System;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -9,13 +11,22 @@ namespace CueController3.Controller.Network
 {
     class PbCtrl
     {
-
+        
+        [DllImport("PandorasAutomation.dll", EntryPoint = "AutoSetPreferredAdapterName")]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool AutoSetPreferredAdapterName(string adapterName);
+        
+        
         public static void Init()
         {
+            AutoSetPreferredAdapterName("Ethernet");
+
             Core.win.masterIpButton.Click += MasterIpButton_Click;
 
-            if (Properties.Settings.Default.masterIp.Length > 0 )
+            if (Properties.Settings.Default.masterIp.Length > 0)
                 Connect(Properties.Settings.Default.masterIp, Properties.Settings.Default.domain);
+
+            //NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
         }
 
         private static void MasterIpButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -91,7 +102,7 @@ namespace CueController3.Controller.Network
             }
             catch (Exception e)
             {
-                    LogCtrl.Error(e.Message);
+                LogCtrl.Error(e.Message);
             }
         }
 

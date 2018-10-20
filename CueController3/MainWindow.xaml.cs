@@ -153,7 +153,7 @@ namespace CueController3
         {
             if (!CuelistCtrl.saved)
             {
-                Nullable<bool> result = DialogCtrl.Show(DialogType.QUESTION, OptionType.YESNO, "Cuelist has changed.", "Do you wan't to save the Cuelist?");
+                bool? result = DialogCtrl.Show(DialogType.QUESTION, OptionType.YESNO, "Cuelist has changed.", "Do you wan't to save the Cuelist?");
                 if (result == true && !ReadWriteCtrl.Write(false)) e.Cancel = true;
             }
         }

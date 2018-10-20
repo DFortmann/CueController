@@ -2,7 +2,6 @@
 using CueController3.Controller.Cues;
 using CueController3.Controller.Dialog;
 using CueController3.Controller.MyMidi;
-using CueController3.Controller.Network;
 using CueController3.Controller.Scripts;
 using CueController3.Model;
 using System;
@@ -54,8 +53,6 @@ namespace CueController3.Controller.Files
             ScriptlistCtrl.ClearScripts();
             BeamerlistCtrl.beamers.Clear();
             BeamerlistCtrl.RefreshBeamerMenus();
-            OscListCtrl.oscTargets.Clear();
-            OscListCtrl.RefreshOscMenu();
             MidiController.SetCtrlVals(new ControllerValues());
             SetPath(null);
         }

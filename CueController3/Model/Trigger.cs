@@ -106,9 +106,10 @@ namespace CueController3.Model
                         break;
 
                     case "OSC":
-                        OscCmd oscCmd = OscCmd.GetOscCmd("/Cue " + array[1]);
-                        if (oscCmd != null) return new Trigger(oscCmd, "OSC " + array[1]);
-                        break;
+                       // OscCmd oscCmd = OscCmd.GetOscCmd("/Cue " + array[1]);
+                        //if (oscCmd != null) return new Trigger(oscCmd, "OSC " + array[1]);
+                        return new Trigger(new OscCmd("video", "/Cue", array[1]), "OSC " + array[1]);
+                        //break;
                 }
             }
             return null;

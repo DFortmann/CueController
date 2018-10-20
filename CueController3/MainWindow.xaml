@@ -42,6 +42,7 @@
                 <MenuItem x:Name="matrixIpButton" Header="Set Matrix IP..."/>
                 <MenuItem x:Name="matrixPresetButton" Header="Load Preset..."/>
                 <Separator Margin="0"/>
+                <MenuItem x:Name="setOscPortButton" Header="Set OSC In port..."/>
                 <MenuItem x:Name="addOscButton" Header="Add OSC Target..."/>
                 <MenuItem x:Name="removeOscMenu" Header="Remove OSC Target"/>
             </MenuItem>

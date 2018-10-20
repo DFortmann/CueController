@@ -1,8 +1,5 @@
-﻿using CueController3.Controller.Cues;
-using CueController3.Controller.Dialog;
-using System;
+﻿using CueController3.Controller.Dialog;
 using System.Collections.Generic;
-using System.Data;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -26,10 +23,10 @@ namespace CueController3.Controller.Network
                 string[] target = oscTarget.Split(' ');
                 oscTargets.Add(new OscTarget(target[0], target[1], IPAddress.Parse(target[2]), int.Parse(target[3]), oscTarget));
             }
-
+            RefreshOscMenu();
         }
 
-        private static void AddOscButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private static void AddOscButton_Click(object sender, RoutedEventArgs e)
         {
             string s = InputDialogCtrl.Show("Enter: Keyword Prefix IP Port", 300);
 

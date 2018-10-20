@@ -23,5 +23,8 @@
     <Setting Name="oscTargets" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="oscReceivePort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">9993</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

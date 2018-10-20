@@ -25,15 +25,13 @@ namespace CueController3.Controller.Beamer
         {
             if (open)
             {
-                LogCtrl.Status("Beamer " + id + ": Open (" + ip + ")");
-                Thread thread = new Thread(() => ShutterMethod(true));
-                thread.Start();
+                LogCtrl.Status(string.Concat("Beamer ", id, ": Open (", ip, ")"));
+                new Thread(() => ShutterMethod(true)).Start();
             }
             else
             {
-                LogCtrl.Status("Beamer " + id + ": Close (" + ip + ")");
-                Thread thread = new Thread(() => ShutterMethod(false));
-                thread.Start();
+                LogCtrl.Status(string.Concat("Beamer ", id, ": Close (", ip, ")"));
+                new Thread(() => ShutterMethod(false)).Start();
             }
         }
 
@@ -47,7 +45,7 @@ namespace CueController3.Controller.Beamer
                 {
                     if (!ar.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
                     {
-                        LogCtrl.ThreadSafeError("Beamer " + id + ": Timed out. (" + ip + ")");
+                        LogCtrl.ThreadSafeError(string.Concat("Beamer ", id, ": Timed out. (", ip, ")"));
                         return;
                     }
 
@@ -60,20 +58,20 @@ namespace CueController3.Controller.Beamer
 
                     if (Encoding.UTF8.GetString(bb) == "%1AVMT=OK")
                     {
-                        if (open) LogCtrl.ThreadSafeSuccess("Beamer " + id + ": Opened (" + ip + ")");
-                        else LogCtrl.ThreadSafeSuccess("Beamer " + id + ": Closed (" + ip + ")");
+                        if (open) LogCtrl.ThreadSafeSuccess(string.Concat("Beamer ", id, ": Opened (", ip, ")"));
+                        else LogCtrl.ThreadSafeSuccess(string.Concat("Beamer ", id, ": Closed (", ip, ")"));
                     }
                     else
                     {
-                        if (open) LogCtrl.ThreadSafeError("Beamer " + id + ": Error opening. (" + ip + ")");
-                        else LogCtrl.ThreadSafeError("Beamer " + id + ": Error closing. (" + ip + ")");
+                        if (open) LogCtrl.ThreadSafeError(string.Concat("Beamer ", id, ": Error opening. (", ip, ")"));
+                        else LogCtrl.ThreadSafeError(string.Concat("Beamer ", id, ": Error closing. (", ip, ")"));
                     }
 
                     client.EndConnect(ar);
                 }
                 catch(Exception e)
                 {
-                    LogCtrl.ThreadSafeError("Beamer " + id + ": Error connecting. (" + ip + ")");
+                    LogCtrl.ThreadSafeError(string.Concat("Beamer ", id, ": Error connecting. (", ip, ")"));
                     LogCtrl.ThreadSafeError(e.Message);
                 }
                 finally
